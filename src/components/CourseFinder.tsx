@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 
 interface Course {
@@ -15,6 +15,8 @@ const CourseFinder = () => {
   const [filteredCourses, setFilteredCourses] = useState<Course[]>([]);
   const [search, setSearch] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
+
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -34,13 +36,19 @@ const CourseFinder = () => {
   }, []);
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(event.target.value);
-    const filtered = courses.filter(
-      (course) =>
-        course.title.toLowerCase().includes(event.target.value.toLowerCase()) ||
-        course.university.toLowerCase().includes(event.target.value.toLowerCase())
-    );
-    setFilteredCourses(filtered);
+    const value = event.target.value;
+    setSearch(value);
+
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+
+    debounceRef.current = setTimeout(() => {
+      const filtered = courses.filter(
+        (course) =>
+          course.title.toLowerCase().includes(value.toLowerCase()) ||
+          course.university.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredCourses(filtered);
+    }, 300); // 300ms debounce delay
   };
 
   return (
@@ -79,13 +87,16 @@ const CourseFinder = () => {
                     {course.title}
                   </h2>
                   <p className="text-gray-700 font-medium mb-2">
-                    University: <span className="font-normal">{course.university}</span>
+                    University:{" "}
+                    <span className="font-normal">{course.university}</span>
                   </p>
                   <p className="text-gray-500 font-medium mb-2">
-                    Category: <span className="font-normal">{course.category}</span>
+                    Category:{" "}
+                    <span className="font-normal">{course.category}</span>
                   </p>
                   <p className="text-gray-500">
-                    Duration: <span className="font-normal">{course.duration}</span>
+                    Duration:{" "}
+                    <span className="font-normal">{course.duration}</span>
                   </p>
                 </div>
               ))
