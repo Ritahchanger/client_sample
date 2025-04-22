@@ -14,6 +14,7 @@ const CourseFinder = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [filteredCourses, setFilteredCourses] = useState<Course[]>([]);
   const [search, setSearch] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -25,6 +26,8 @@ const CourseFinder = () => {
         setFilteredCourses(response.data);
       } catch (error) {
         console.error("Error fetching courses:", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchCourses();
@@ -58,36 +61,42 @@ const CourseFinder = () => {
         </div>
       </div>
 
-      {/* Course Cards Section */}
-      <div className="pt-[180px] px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {filteredCourses.length > 0 ? (
-            filteredCourses.map((course) => (
-              <div
-                key={course.id}
-                className="bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition ease-in-out duration-300 transform hover:scale-105"
-              >
-                <h2 className="text-2xl font-semibold text-indigo-700 mb-3">
-                  {course.title}
-                </h2>
-                <p className="text-gray-700 font-medium mb-2">
-                  University: <span className="font-normal">{course.university}</span>
-                </p>
-                <p className="text-gray-500 font-medium mb-2">
-                  Category: <span className="font-normal">{course.category}</span>
-                </p>
-                <p className="text-gray-500">
-                  Duration: <span className="font-normal">{course.duration}</span>
-                </p>
-              </div>
-            ))
-          ) : (
-            <p className="col-span-full text-center text-gray-500">
-              No courses found.
-            </p>
-          )}
+      {/* Loader */}
+      {loading ? (
+        <div className="flex items-center justify-center min-h-screen pt-[200px]">
+          <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
         </div>
-      </div>
+      ) : (
+        <div className="pt-[180px] px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {filteredCourses.length > 0 ? (
+              filteredCourses.map((course) => (
+                <div
+                  key={course.id}
+                  className="bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition ease-in-out duration-300 transform hover:scale-105"
+                >
+                  <h2 className="text-2xl font-semibold text-indigo-700 mb-3">
+                    {course.title}
+                  </h2>
+                  <p className="text-gray-700 font-medium mb-2">
+                    University: <span className="font-normal">{course.university}</span>
+                  </p>
+                  <p className="text-gray-500 font-medium mb-2">
+                    Category: <span className="font-normal">{course.category}</span>
+                  </p>
+                  <p className="text-gray-500">
+                    Duration: <span className="font-normal">{course.duration}</span>
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p className="col-span-full text-center text-gray-500">
+                No courses found.
+              </p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
