@@ -7,6 +7,7 @@ interface Course {
   title: string;
   university: string;
   category: string;
+  recommendationLevel: string;
   duration: string;
 }
 
@@ -48,12 +49,11 @@ const CourseFinder = () => {
           course.university.toLowerCase().includes(value.toLowerCase())
       );
       setFilteredCourses(filtered);
-    }, 300); // 300ms debounce delay
+    }, 300);
   };
 
   return (
     <div className="bg-gray-100 min-h-screen">
-      {/* Fixed Header Section */}
       <div className="bg-white shadow-md fixed top-0 left-0 w-full z-50 px-4 py-6">
         <h1 className="text-3xl md:text-4xl font-extrabold text-center text-gray-900 mb-4">
           University Course Finder
@@ -68,8 +68,6 @@ const CourseFinder = () => {
           />
         </div>
       </div>
-
-      {/* Loader */}
       {loading ? (
         <div className="flex items-center justify-center min-h-screen pt-[200px]">
           <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
@@ -94,9 +92,15 @@ const CourseFinder = () => {
                     Category:{" "}
                     <span className="font-normal">{course.category}</span>
                   </p>
-                  <p className="text-gray-500">
+                  <p className="text-gray-500 font-medium mb-2">
                     Duration:{" "}
                     <span className="font-normal">{course.duration}</span>
+                  </p>
+                  <p className="text-green-700 font-semibold">
+                    Recommendation Level:{" "}
+                    <span className="font-normal text-black">
+                      {course.recommendationLevel}
+                    </span>
                   </p>
                 </div>
               ))
